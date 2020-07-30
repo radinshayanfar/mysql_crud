@@ -4,7 +4,10 @@ from dotenv import load_dotenv, find_dotenv
 from os import getenv
 import sys
 from PyQt5 import QtWidgets
+
+from PictoController import PictoController
 from PictoMainWindow import PictoMainWindow
+from PictoModel import PictoModel
 
 load_dotenv(find_dotenv())
 
@@ -25,18 +28,11 @@ def show_message(title, text, icon=None, parent=None):
     return msg.exec()
 
 
-def db_connect():
-    my_db = mysql.connector.connect(**db_config)
-    my_cursor = my_db.cursor()
-
-    return my_db, my_cursor
-
-
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
 
     try:
-        my_db, db_cursor = db_connect()
+        my_db = mysql.connector.connect(**db_config)
     except mysql.connector.Error as e:
         sys.exit(show_message(title="Error", text=str(e), icon=QMessageBox.Critical))
 
@@ -44,4 +40,9 @@ if __name__ == "__main__":
     ui = PictoMainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
+
+    model = PictoModel(my_db)
+
+    controller = PictoController(view=ui, model=model)
+
     sys.exit(app.exec_())

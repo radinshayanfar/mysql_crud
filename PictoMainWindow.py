@@ -9,7 +9,7 @@
 
 
 from PyQt5 import QtCore, QtWidgets
-from centergroupbox import CenterGroupBox
+from CenterGroupBox import CenterGroupBox
 
 
 class PictoMainWindow(object):
