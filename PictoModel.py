@@ -37,21 +37,19 @@ class PictoModel:
     def update_row(self, row, row_index):
         self._convert_type(row)
 
-        params = []
         query = f"UPDATE {self._current_table_name} SET "
         for i, col in enumerate(self._current_columns):
-            # val = f"'{row[i]}'" if isinstance(row[i], str) else str(row[i])
-            params.append(row[i])
-            query += f"{col}=%s, "
-        query += "\b\b WHERE "
+            val = f"'{row[i]}'" if isinstance(row[i], str) else str(row[i])
+            query += f"{col}={val}, "
+        query = query[:-2]
+        query += " WHERE "
         for i, old_val in enumerate(self._current_table_keys_old_vals[row_index]):
-            params.append(old_val)
-            query += f"{self._current_table_keys[i]}=%s AND "
-        query += "\b\b\b\b\b"
+            query += f"{self._current_table_keys[i]}={old_val} AND "
+        query = query[:-5]
 
-        print(query)
-        print(params)
-        self._cursor.execute(query, params)
+        self._cursor.execute(query)
+        self._db.commit()
+        print(self._cursor.statement)
 
     def _convert_type(self, row):
         for i in range(len(self._current_table_types)):
