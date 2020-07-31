@@ -18,23 +18,13 @@ db_config = {
     "database": getenv("DB_NAME"),
 }
 
-
-def show_message(title, text, icon=None, parent=None):
-    msg = QMessageBox(parent)
-    msg.setWindowTitle(title)
-    msg.setText(text)
-    msg.setIcon(icon)
-
-    return msg.exec()
-
-
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
 
     try:
         my_db = mysql.connector.connect(**db_config)
     except mysql.connector.Error as e:
-        sys.exit(show_message(title="Error", text=str(e), icon=QMessageBox.Critical))
+        sys.exit(PictoMainWindow.show_message(title="Error", text=str(e), icon=QMessageBox.Critical))
 
     MainWindow = QtWidgets.QMainWindow()
     ui = PictoMainWindow()

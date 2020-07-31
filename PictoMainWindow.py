@@ -9,6 +9,8 @@
 
 
 from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
+
 from CenterGroupBox import CenterGroupBox
 
 
@@ -59,3 +61,12 @@ class PictoMainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    @staticmethod
+    def show_message(title, text, icon=None, parent=None):
+        msg = QMessageBox(parent)
+        msg.setWindowTitle(title)
+        msg.setText(text)
+        msg.setIcon(icon)
+
+        return msg.exec()

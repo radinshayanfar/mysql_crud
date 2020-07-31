@@ -1,3 +1,8 @@
+import mysql.connector
+import sys
+
+from PyQt5.QtWidgets import QMessageBox
+
 from PictoMainWindow import PictoMainWindow
 from PictoModel import PictoModel
 
@@ -20,15 +25,19 @@ class PictoController:
         self._view.tableGroupBox.buildTable(columns, rows, self.tableClick)
 
     def tableClick(self, action: str, row_index: int = 0):
-        if action == "insert":
-            row = [ln.text() for ln in self._view.tableGroupBox.insertLineEdits]
-            self._model.insert_row(row)
-            self._load_table()
-            return
+        try:
+            if action == "insert":
+                row = [ln.text() for ln in self._view.tableGroupBox.insertLineEdits]
+                self._model.insert_row(row)
+                self._load_table()
+                return
 
-        row = [ln.text() for ln in self._view.tableGroupBox.tableLineEdits[row_index]]
-        if action == "update":
-            self._model.update_row(row, row_index)
-        else:
-            self._model.delete_row(row_index)
-            self._load_table()
+            row = [ln.text() for ln in self._view.tableGroupBox.tableLineEdits[row_index]]
+            if action == "update":
+                self._model.update_row(row, row_index)
+            else:
+                self._model.delete_row(row_index)
+                self._load_table()
+        except mysql.connector.Error as e:
+            PictoMainWindow.show_message(title="Error", text=str(e), icon=QMessageBox.Critical,
+                                         parent=self._view.centralwidget)
