@@ -1,6 +1,4 @@
 import mysql.connector
-import sys
-
 from PyQt5.QtWidgets import QMessageBox
 
 from PictoMainWindow import PictoMainWindow
@@ -20,9 +18,9 @@ class PictoController:
         self._load_table(new.text())
 
     def _load_table(self, table_name=None):
-        columns, rows = self._model.get_table(table_name)
+        columns, rows, prev_en, next_en = self._model.get_table(table_name)
 
-        self._view.tableGroupBox.buildTable(columns, rows, self.tableClick)
+        self._view.tableGroupBox.buildTable(columns, rows, self.tableClick, self.paginationClicked, prev_en, next_en)
 
     def tableClick(self, action: str, row_index: int = 0):
         try:
@@ -41,3 +39,10 @@ class PictoController:
         except mysql.connector.Error as e:
             PictoMainWindow.show_message(title="Error", text=str(e), icon=QMessageBox.Critical,
                                          parent=self._view.centralwidget)
+
+    def paginationClicked(self, dir: str):
+        if dir == "next":
+            self._model.next_page()
+        else:
+            self._model.prev_page()
+        self._load_table()

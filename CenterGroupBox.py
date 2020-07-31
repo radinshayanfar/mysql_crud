@@ -22,32 +22,38 @@ class CenterGroupBox(QGroupBox):
         self.insertGridLayout = QGridLayout()
         self.insertGridLayout.setObjectName("insertGridLayout")
 
-        # assign the layout to the groupBox
-        # self.setLayout(self.gridLayout)
-
         layoutForSpacer = QGridLayout(self)
         layoutForSpacer.addLayout(self.tableGridLayout, 0, 0, 1, 1)
         spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         layoutForSpacer.addItem(spacerItem, 1, 0, 1, 1)
         layoutForSpacer.addLayout(self.insertGridLayout, 2, 0, 1, 1)
 
-    def buildTable(self, columns, rows, callback):
+    def buildTable(self, columns, rows, crud_callback, pagination_callback, prev_en, next_en):
         self._deleteAll()
 
         for i, column in enumerate(columns):
             self.tableGridLayout.addWidget(QLabel(column), 0, i)
 
+        prev = QPushButton("Previous")
+        next = QPushButton("Next")
+        prev.clicked.connect(lambda: pagination_callback("prev"))
+        next.clicked.connect(lambda: pagination_callback("next"))
+        prev.setEnabled(prev_en)
+        next.setEnabled(next_en)
+        self.tableGridLayout.addWidget(prev, 0, i + 1)
+        self.tableGridLayout.addWidget(next, 0, i + 2)
+
         for r_index, row in enumerate(rows):
             line = []
             for c_index, field in enumerate(row):
                 edit = QLineEdit(str(field))
-                edit.returnPressed.connect(lambda r=r_index: callback("update", r))
+                edit.returnPressed.connect(lambda r=r_index: crud_callback("update", r))
                 line.append(edit)
                 self.tableGridLayout.addWidget(edit, r_index + 1, c_index)
             update = QPushButton("Update")
             delete = QPushButton("Delete")
-            update.clicked.connect(lambda _, r=r_index: callback("update", r))
-            delete.clicked.connect(lambda _, r=r_index: callback("delete", r))
+            update.clicked.connect(lambda _, r=r_index: crud_callback("update", r))
+            delete.clicked.connect(lambda _, r=r_index: crud_callback("delete", r))
             self.tableGridLayout.addWidget(update, r_index + 1, c_index + 1)
             self.tableGridLayout.addWidget(delete, r_index + 1, c_index + 2)
             self.tableLineEdits.append(line)
@@ -57,11 +63,11 @@ class CenterGroupBox(QGroupBox):
         for i, column in enumerate(columns):
             edit = QLineEdit()
             edit.setPlaceholderText(column)
-            edit.returnPressed.connect(lambda: callback("insert"))
+            edit.returnPressed.connect(lambda: crud_callback("insert"))
             self.insertLineEdits.append(edit)
             self.insertGridLayout.addWidget(edit, 0, i)
         insert = QPushButton("Insert")
-        insert.clicked.connect(lambda: callback("insert"))
+        insert.clicked.connect(lambda: crud_callback("insert"))
         self.insertGridLayout.addWidget(insert, 0, i + 1)
 
     def _deleteAll(self):

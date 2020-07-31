@@ -4,6 +4,8 @@ class PictoModel:
         self._cursor = self._db.cursor()
         self._dict_cursor = self._db.cursor(dictionary=True)
         self._current_table_name = None
+        self._PAGE_SIZE = 10
+        self._current_page = 0
 
     def get_tables(self):
         self._cursor.execute("SHOW TABLES")
@@ -11,10 +13,16 @@ class PictoModel:
         res = [tbl[0] for tbl in res]
         return res
 
+    def _count(self):
+        query = f"SELECT COUNT(*) FROM {self._current_table_name}"
+        self._cursor.execute(query)
+        return self._cursor.fetchall()[0][0]
+
     def get_table(self, table_name: str):
         self._reset_lists()
         if table_name is not None:
             self._current_table_name = table_name
+            self._current_page = 0
 
         query = f"SHOW COLUMNS FROM {self._current_table_name}"
         self._dict_cursor.execute(query)
@@ -24,7 +32,9 @@ class PictoModel:
             if row['Key'] == 'PRI':
                 self._current_table_keys.append(row['Field'])
 
-        query = f"SELECT * FROM {self._current_table_name}"
+        count = self._count()
+
+        query = f"SELECT * FROM {self._current_table_name} LIMIT {self._current_page * self._PAGE_SIZE}, {self._PAGE_SIZE}"
         self._cursor.execute(query)
         rows = self._cursor.fetchall()
         for row in rows:
@@ -35,7 +45,14 @@ class PictoModel:
             self._current_table_keys_old_vals.append(old)
 
         self._db.commit()
-        return self._current_columns, rows
+        return self._current_columns, rows, (self._current_page > 0), (
+                count > (self._current_page + 1) * self._PAGE_SIZE)
+
+    def next_page(self):
+        self._current_page += 1
+
+    def prev_page(self):
+        self._current_page -= 1
 
     def update_row(self, row, row_index):
         self._convert_type(row)
@@ -62,6 +79,10 @@ class PictoModel:
 
         self._cursor.execute(query)
         self._db.commit()
+
+        if self._count() <= (self._current_page + 1) * self._PAGE_SIZE:
+            self.prev_page()
+
         print(self._cursor.statement)
 
     def insert_row(self, row):
