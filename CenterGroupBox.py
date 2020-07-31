@@ -28,16 +28,32 @@ class CenterGroupBox(QGroupBox):
         spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         layoutForSpacer.addItem(spacerItem, 1, 0, 1, 1)
 
-    def buildTable(self, columns, rows):
+    def buildTable(self, columns, rows, callback):
         self._deleteAll()
 
         for i, column in enumerate(columns):
             self.gridLayout.addWidget(QLabel(column), 0, i)
 
         for r_index, row in enumerate(rows):
+            line = []
             for c_index, field in enumerate(row):
-                self.gridLayout.addWidget(QLineEdit(str(field)), r_index + 1, c_index)
+                edit = QLineEdit(str(field))
+                edit.returnPressed.connect(lambda r=r_index: callback("update", r))
+                line.append(edit)
+                self.gridLayout.addWidget(edit, r_index + 1, c_index)
+            update = QPushButton("Update")
+            delete = QPushButton("Delete")
+            update.clicked.connect(lambda _, r=r_index: callback("update", r))
+            delete.clicked.connect(lambda _, r=r_index: callback("delete", r))
+            self.gridLayout.addWidget(update, r_index + 1, c_index + 1)
+            self.gridLayout.addWidget(delete, r_index + 1, c_index + 2)
+            self.lineEdits.append(line)
+            # self.updateButtons.append(update)
+            # self.updateButtons.append(delete)
 
     def _deleteAll(self):
         for i in reversed(range(self.gridLayout.count())):
             self.gridLayout.itemAt(i).widget().deleteLater()
+        self.lineEdits = []
+        # self.updateButtons = []
+        # self.deleteButtons = []

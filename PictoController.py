@@ -14,4 +14,13 @@ class PictoController:
     def show_new_table(self, new, prev):
         columns, rows = self._model.get_table(new.text())
 
-        self._view.tableGroupBox.buildTable(columns, rows)
+        self._view.tableGroupBox.buildTable(columns, rows, self.tableClick)
+
+    def tableClick(self, action: str, row_index: int):
+        row = [ln.text() for ln in self._view.tableGroupBox.lineEdits[row_index]]
+        if action == "update":
+            self._model.update_row(row, row_index)
+        else:
+            # self._model.update_row(row)
+            pass
+        t = type(5)
