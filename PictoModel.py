@@ -84,11 +84,11 @@ class PictoModel:
 
         self._cursor.execute(query)
         self._db.commit()
+        print(self._cursor.statement)
 
         if self._count() <= self._current_page * self._PAGE_SIZE:
             self.prev_page()
 
-        print(self._cursor.statement)
 
     def insert_row(self, row):
         self._convert_type(row)
