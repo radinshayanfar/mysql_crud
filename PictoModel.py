@@ -1,3 +1,6 @@
+from math import ceil
+
+
 class PictoModel:
     def __init__(self, db):
         self._db = db
@@ -6,6 +9,7 @@ class PictoModel:
         self._current_table_name = None
         self._PAGE_SIZE = 10
         self._current_page = 0
+        self._status_count = None
 
     def get_tables(self):
         self._cursor.execute("SHOW TABLES")
@@ -96,6 +100,13 @@ class PictoModel:
         self._cursor.execute(query, row)
         self._db.commit()
         print(self._cursor.statement)
+
+    def get_status_message(self, update_count: bool):
+        if self._status_count is None or update_count:
+            self._status_count = self._count()
+        total_pages = ceil(self._status_count / self._PAGE_SIZE)
+        ret = f"{self._current_table_name} table. Page {self._current_page + 1} of {total_pages}. {self._status_count} rows total"
+        return ret
 
     def _convert_type(self, row):
         for i in range(len(self._current_table_types)):

@@ -13,13 +13,14 @@ class PictoController:
         tables = self._model.get_tables()
         self._view.sideListWidget.addItems(tables)
         self._view.sideListWidget.currentItemChanged.connect(self.new_table_clicked)
+        self._view.statusbar.messageChanged.connect(self.statusBarMessageChanged)
 
     def new_table_clicked(self, new, prev):
         self._load_table(new.text())
 
     def _load_table(self, table_name=None):
         columns, rows, prev_en, next_en = self._model.get_table(table_name)
-
+        self._view.statusbar.showMessage(self._model.get_status_message(update_count=True))
         self._view.tableGroupBox.buildTable(columns, rows, self.tableClick, self.paginationClicked, prev_en, next_en)
 
     def tableClick(self, action: str, row_index: int = 0):
@@ -46,3 +47,7 @@ class PictoController:
         else:
             self._model.prev_page()
         self._load_table()
+
+    def statusBarMessageChanged(self, new_msg):
+        if new_msg == '':
+            self._view.statusbar.showMessage(self._model.get_status_message(update_count=True))

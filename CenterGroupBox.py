@@ -40,6 +40,8 @@ class CenterGroupBox(QGroupBox):
         next.clicked.connect(lambda: pagination_callback("next"))
         prev.setEnabled(prev_en)
         next.setEnabled(next_en)
+        prev.setStatusTip("Previous page")
+        next.setStatusTip("Next page")
         self.tableGridLayout.addWidget(prev, 0, i + 1)
         self.tableGridLayout.addWidget(next, 0, i + 2)
 
