@@ -49,6 +49,7 @@ class PictoModel:
             self._current_table_keys_old_vals.append(old)
 
         self._db.commit()
+        print(self._cursor.statement)
         return self._current_columns, rows, (self._current_page > 0), (
                 count > (self._current_page + 1) * self._PAGE_SIZE)
 
