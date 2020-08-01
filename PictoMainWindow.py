@@ -19,6 +19,7 @@ class PictoMainWindow(object):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1200, 600)
         MainWindow.setPalette(PictoMainWindow._get_palette())
+        MainWindow.setWindowTitle("Graphical CRUD application - Created by: Radin Shayanfar")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.centralwidget)
