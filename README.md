@@ -4,7 +4,7 @@ Simple MySQL graphical CRUD application using Qt 5.
 
 ## Screenshot
 
-~[app screenshot](https://github.com/radinshayanfar/mysql_crud/raw/master/.github/sc.png)
+~[app screenshot](https://raw.githubusercontent.com/radinshayanfar/mysql_crud/master/.github/sc.png)
 
 ## Installation
 1. Clone this repository
