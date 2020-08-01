@@ -85,7 +85,7 @@ class PictoModel:
         self._cursor.execute(query)
         self._db.commit()
 
-        if self._count() <= (self._current_page + 1) * self._PAGE_SIZE:
+        if self._count() <= self._current_page * self._PAGE_SIZE:
             self.prev_page()
 
         print(self._cursor.statement)
