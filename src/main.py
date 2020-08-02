@@ -5,9 +5,9 @@ from os import getenv
 import sys
 from PyQt5 import QtWidgets
 
-from PictoController import PictoController
-from PictoMainWindow import PictoMainWindow
-from PictoModel import PictoModel
+from Controller import Controller
+from view.UIMainWindow import UIMainWindow
+from Model import Model
 
 load_dotenv(find_dotenv())
 
@@ -24,15 +24,15 @@ if __name__ == "__main__":
     try:
         my_db = mysql.connector.connect(**db_config)
     except mysql.connector.Error as e:
-        sys.exit(PictoMainWindow.show_message(title="Error", text=str(e), icon=QMessageBox.Critical))
+        sys.exit(UIMainWindow.show_message(title="Error", text=str(e), icon=QMessageBox.Critical))
 
     MainWindow = QtWidgets.QMainWindow()
-    ui = PictoMainWindow()
+    ui = UIMainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
 
-    model = PictoModel(my_db)
+    model = Model(my_db)
 
-    controller = PictoController(view=ui, model=model)
+    controller = Controller(view=ui, model=model)
 
     sys.exit(app.exec_())

@@ -1,7 +1,7 @@
 from math import ceil
 
 
-class PictoModel:
+class Model:
     def __init__(self, db):
         self._db = db
         self._cursor = self._db.cursor()

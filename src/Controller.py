@@ -1,12 +1,12 @@
 import mysql.connector
 from PyQt5.QtWidgets import QMessageBox
 
-from PictoMainWindow import PictoMainWindow
-from PictoModel import PictoModel
+from view.UIMainWindow import UIMainWindow
+from Model import Model
 
 
-class PictoController:
-    def __init__(self, view: PictoMainWindow, model: PictoModel):
+class Controller:
+    def __init__(self, view: UIMainWindow, model: Model):
         self._view = view
         self._model = model
 
@@ -38,8 +38,8 @@ class PictoController:
                 self._model.delete_row(row_index)
                 self._load_table()
         except mysql.connector.Error as e:
-            PictoMainWindow.show_message(title="Error", text=str(e), icon=QMessageBox.Critical,
-                                         parent=self._view.centralwidget)
+            UIMainWindow.show_message(title="Error", text=str(e), icon=QMessageBox.Critical,
+                                      parent=self._view.centralwidget)
 
     def paginationClicked(self, dir: str):
         if dir == "next":
