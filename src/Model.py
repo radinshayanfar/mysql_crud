@@ -32,7 +32,7 @@ class Model:
         self._dict_cursor.execute(query)
         for row in self._dict_cursor:
             self._current_columns.append(row['Field'])
-            self._current_table_types.append(row['Type'].decode())
+            self._current_table_types.append(row['Type'])
             if row['Key'] == 'PRI':
                 self._current_table_keys.append(row['Field'])
 
